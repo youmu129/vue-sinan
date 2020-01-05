@@ -58,10 +58,7 @@
 
 <script>
 export default {
-  name: 'Sinan', 
-  props: {
-    msg: String
-  }
+  name: 'bookmark'
 }
 </script>
 

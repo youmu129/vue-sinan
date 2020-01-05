@@ -21,3 +21,9 @@
     </el-menu>
   </el-aside>
 </template>
+
+<script>
+export default {
+  name: 'main-aside'
+}
+</script>

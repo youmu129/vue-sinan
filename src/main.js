@@ -1,37 +1,45 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Element from 'element-ui';
 
-import App from './App.vue'
+import App from './app';
+import MainHeader from './components/header';
+import MainFooter from './components/footer';
+import MainAside from './components/aside';
+import Workflow from './components/workflow';
+import Bookmark from './components/bookmark';
+import About from './components/about';
 
-import Element from 'element-ui'
-import MainHeader from './components/header'
-import MainFooter from './components/footer'
-import MainAside from './components/aside'
-import Sinan from './components/Sinan'
-import HelloWorld from './components/HelloWorld'
+import 'element-ui/lib/theme-chalk/base.css';
+import 'element-ui/lib/theme-chalk/index.css';
 
-import 'element-ui/lib/theme-chalk/index.css'
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 
-Vue.use(Element);
 Vue.use(VueRouter);
-Vue.component('main-header', MainHeader);
-Vue.component('main-footer', MainFooter);
-Vue.component('main-aside', MainAside);
+Vue.use(Element);
+Vue.component(CollapseTransition.name, CollapseTransition);
 
-Vue.config.productionTip = false
+Vue.component(MainHeader.name, MainHeader);
+Vue.component(MainFooter.name, MainFooter);
+Vue.component(MainAside.name, MainAside);
 
 var router = new VueRouter({
   mode: 'hash', 
   routes: [
     {
-      path: '/sinan', 
-      name: 'Sinan',
-      component: Sinan
+      path: '/bookmark', 
+      name: Bookmark.name,
+      component: Bookmark
     }, 
     {
       path: '/about',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: About.name,
+      component: About
+    }, 
+    {
+      path: '/workflow',
+      name: Workflow.name, 
+      component: Workflow
     }
   ]
 });

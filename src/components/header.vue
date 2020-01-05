@@ -1,17 +1,23 @@
 <template>
   <el-header>
-    <el-menu class="header" mode="horizontal" router default-active="sinan">
-      <el-menu-item index="sinan" :route="{name: 'Sinan'}">Sinan</el-menu-item>
-      <el-menu-item index="vue" :route="{name: 'HelloWorld'}">HelloWorld</el-menu-item>
+    <el-menu mode="horizontal" :default-active="activeIndex" router>
+      <el-menu-item index="bookmark" :route="{name: 'bookmark'}">Bookmark</el-menu-item>
+      <el-menu-item index="workflow" :route="{name: 'workflow'}">Workflow</el-menu-item>
+      <el-menu-item index="about" :route="{name: 'about'}">About</el-menu-item>
     </el-menu>
   </el-header>
 </template>
 
 <script>
   export default {
-    name: 'MainHeader',
+    name: 'main-header',
     props: {
       msg: String
+    }, 
+    data() {
+      return {
+        activeIndex: 'about'
+      };
     }
   }
 </script>

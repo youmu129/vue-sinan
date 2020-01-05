@@ -34,14 +34,14 @@
       <i class="el-icon-edit"></i>
       <i class="el-icon-share"></i>
       <i class="el-icon-delete"></i>
-      <el-button type="primary" icon="el-icon-search">搜索</el-button>
+      <el-button type="primary" icon="el-icon-search">杜索</el-button>
     </ul>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'about',
   props: {
     msg: String
   }
