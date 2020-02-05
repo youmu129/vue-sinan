@@ -1,0 +1,34 @@
+{
+    "items": [
+    {
+      "name": "Vue.js", 
+      "url": "https://vuejs.org/",
+      "logo_url": "https://cn.vuejs.org/images/logo.png", 
+      "description": "渐进式 JavaScript 框架"
+    },
+    {
+      "name": "博客园 - 代码改变世界", 
+      "url": "https://www.cnblogs.com/",
+      "logo_url": "https://www.cnblogs.com/favicon.ico", 
+      "description": "博客园是一个面向开发者的知识分享社区。自创建以来，博客园一直致力并专注于为开发者打造一个纯净的技术交流社区，推动并帮助开发者通过互联网分享知识，从而让更多开发者从中受益。博客园的使命是帮助开发者用代码改变世界。"
+    },
+    {
+      "name": "Element", 
+      "url": "https://element.eleme.cn/",
+      "logo_url": "https://element.eleme.cn/favicon.ico", 
+      "description": "Element，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库"
+    },
+    {
+      "name": "w3school 在线教程", 
+      "url": "https://www.w3school.com.cn",
+      "logo_url": "https://www.w3school.com.cn/ui2019/logo-180.png", 
+      "description": "全球最大的中文 Web 技术教程。"
+    },
+    {
+      "name": "Colly", 
+      "url": "http://go-colly.org/",
+      "logo_url": "", 
+      "description": "Scraping framework for extracting the data you need from websites, used for a wide range of applications, like data mining, data processing or archiving"
+    }
+  ]
+}

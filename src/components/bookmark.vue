@@ -1,86 +1,142 @@
 <template>
-  <div class="sinan">
-    <el-container>
-      <main-aside></main-aside>
-      <el-container direction="vertical">
-        <div class="category">
-          <h2 class="left">类别1</h2>
-          <el-divider></el-divider>
+  <div id="bookmark">
+    <h2>Bookmark</h2>
+    <div id="website">
+      <el-row>
+        <el-col :span="4">
+          <el-button @click="showAddItemDialog = true" icon="el-icon-plus"></el-button>
+        </el-col>
+        <el-col :offset="12" :span="8">
+          <div class="search-row">
+            <el-input class="search-input"></el-input>
+            <el-button class="search-button" icon="el-icon-search"></el-button>
+          </div>
+        </el-col>
+      </el-row>
+      <el-divider></el-divider>
+      <el-row class="items-row" v-for="row_items in sliceItems(items, 4)" 
+        :key="row_items.row" :gutter="12">
+        <el-col v-for="item in row_items" :key="item.id" :span="6">
+          <el-card shadow="hover">
+            <el-image class="item-logo" :src="item.logo_url" fit="contain"></el-image>
+            <span>{{ item.name }}</span>
+            <div class="item-desc">{{ item.url }}</div>
+            <div class="item-desc">{{ item.description }}</div>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-dialog title="Add" :visible.sync="showAddItemDialog">
+        <el-form :model="itemFormModel">
+          <el-form-item label="Name">
+            <el-input v-model="itemFormModel.name"></el-input>
+          </el-form-item>
+          <el-form-item label="Uri">
+            <el-input v-model="itemFormModel.uri"></el-input>
+          </el-form-item>
+          <el-form-item label="Description">
+            <el-input v-model="itemFormModel.description"></el-input>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button @click="showAddItemDialog = false">取消</el-button>
+          <el-button type="primary" @click="showAddItemDialog = false;onAddItemFormSubmit();">确定</el-button>
         </div>
-        <el-row :gutter="12">
-          <el-col :span="7" :push="1">
-            <el-card shadow="hover">
-              <el-image class="logo" src="https://cn.vuejs.org/images/logo.png" fit="contain"></el-image>
-              <div>
-              <span>Vue.js</span>
-                <div class="description">
-                  <span>渐进式 JavaScript 框架</span>
-                </div>
-              </div> 
-            </el-card>
-            <el-card shadow="hover">
-              <el-image class="logo" src="https://www.cnblogs.com/favicon.ico" fit="contain"></el-image>
-              <div>
-              <span>博客园 - 代码改变世界</span>
-                <div class="description">
-                  <span>博客园是一个面向开发者的知识分享社区。自创建以来，博客园一直致力并专注于为开发者打造一个纯净的技术交流社区，推动并帮助开发者通过互联网分享知识，从而让更多开发者从中受益。博客园的使命是帮助开发者用代码改变世界。</span>
-                </div>
-              </div> 
-            </el-card>
-          </el-col>
-          <el-col :span="7" :push="1">
-            <el-card shadow="hover">
-              <el-image class="logo" src="https://element.eleme.cn/favicon.ico" fit="contain"></el-image>
-              <div>
-                <span>Element</span>
-                <div class="description">
-                  <span>Element，一套为开发者、设计师和产品经理准备的基于 Vue 2.0 的桌面端组件库</span>
-                </div>
-              </div> 
-            </el-card>
-          </el-col>
-          <el-col :span="7" :push="1">
-            <el-card shadow="hover">
-              <el-image class="logo" src="https://www.w3school.com.cn/ui2019/logo-180.png" fit="contain"></el-image>
-              <div>
-                <span>w3school 在线教程</span>
-                <div class="description">
-                  <span>全球最大的中文 Web 技术教程。</span>
-                </div>
-              </div> 
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-container>
-    </el-container>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'bookmark'
+  name: 'bookmark',
+  props: [],
+  data: function() {
+    return {
+      items: [], 
+      showAddItemDialog: false, 
+      itemFormModel: {
+        name: '', 
+        uri: '', 
+        description: ''
+      }
+    }
+  },
+  created: function() {
+    this.onUpdateItems();
+  },
+  methods: {
+    onUpdateItems: function() {
+      axios({
+        method: "GET", 
+        url: "/api/bookmark/list",
+      }).then((result) => {
+        if (result.data && result.data.items) {
+          this.items = result.data.items;
+        }
+      });
+    },
+    sliceItems: function(items, n) {
+      let row_number = Math.ceil(items.length / n);
+      let new_items = [];
+      for (let i = 0; i < row_number; ++i) {
+        new_items.push(items.slice(i*n, (i+1)*n));
+      }
+
+      return new_items;
+    }, 
+    onAddItemFormSubmit: function() {
+      axios({
+        method: "PUT",
+        url: "/api/bookmark/add",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        transformRequest: [function(data) {
+          data = JSON.stringify(data);
+          return data;
+        }],
+        withCredentials: true,
+        data: this.itemFormModel
+      }).then((result) => {
+        this.onUpdateItems();
+      });
+    }
+  }
 }
 </script>
 
 <style scoped>
-  .category {
-    text-align: left;
-    padding-left: 40px;
+  #bookmark {
+    width: 90%;
+    margin: 0 auto;
   }
-  .el-card {
-    margin-top: 20px;
+  .search-row {
+    display: flex;
   }
-  .el-card .description {
-    font-size: 13px;
-    padding: 0;
-    margin-top: 13px;
-    line-height: 16px;
-    color: #999;
+  .search-button {
+    margin-left: 12px;
   }
-  .el-card .logo {
-    width: 70px;
+  .items-row {
+    margin-bottom: 10px;
   }
-  .el-divider {
-    width: 670px;
+  .item-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .item-desc {
+    font-size: 12px;
+    color: darkgray;
+    text-overflow: ellipsis;
+
+    /* 自动隐藏超长字段 */
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 5px;
+  }
+  .item-tooltip-popper {
+    max-width: 20px;
   }
 </style>
