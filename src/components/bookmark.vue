@@ -4,7 +4,7 @@
     <div id="website">
       <el-row>
         <el-col :span="4">
-          <el-button @click="showAddItemDialog = true" icon="el-icon-plus"></el-button>
+          <el-button @click="onAdd" icon="el-icon-plus"></el-button>
         </el-col>
         <el-col :offset="12" :span="8">
           <div class="search-row">
@@ -25,21 +25,24 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-dialog title="Add" :visible.sync="showAddItemDialog">
-        <el-form :model="itemFormModel">
+      <el-dialog title="Add" :visible.sync="itemEditDialogVisible">
+        <el-form :model="itemModel">
           <el-form-item label="Name">
-            <el-input v-model="itemFormModel.name"></el-input>
+            <el-input v-model="itemModel.name"></el-input>
           </el-form-item>
           <el-form-item label="Uri">
-            <el-input v-model="itemFormModel.uri"></el-input>
+            <el-input v-model="itemModel.uri"></el-input>
           </el-form-item>
           <el-form-item label="Description">
-            <el-input v-model="itemFormModel.description"></el-input>
+            <el-input v-model="itemModel.description"></el-input>
+          </el-form-item>
+          <el-form-item label="Icon">
+            <el-input v-model="itemModel.icon"></el-input>
           </el-form-item>
         </el-form>
         <div>
-          <el-button @click="showAddItemDialog = false">取消</el-button>
-          <el-button type="primary" @click="showAddItemDialog = false;onAddItemFormSubmit();">确定</el-button>
+          <el-button @click="onCancel">取消</el-button>
+          <el-button type="primary" @click="onSubmit">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -52,32 +55,67 @@ import axios from 'axios'
 export default {
   name: 'bookmark',
   props: [],
-  data: function() {
+  data() {
     return {
       items: [], 
-      showAddItemDialog: false, 
-      itemFormModel: {
-        name: '', 
-        uri: '', 
-        description: ''
-      }
+      itemModel: {
+        visible: false, 
+        edit: false,
+        formModel: {
+          name: '', 
+          uri: '', 
+          description: '', 
+          icon: '', 
+          labels: []
+        },
+      },
+      itemEditDialogVisible: false
     }
   },
-  created: function() {
-    this.onUpdateItems();
+  created() {
+    this.updateItems();
   },
   methods: {
-    onUpdateItems: function() {
+    // 刷新资源列表
+    updateItems() {
       axios({
         method: "GET", 
-        url: "/api/bookmark/list",
+        url: "/bookmark",
       }).then((result) => {
-        if (result.data && result.data.items) {
-          this.items = result.data.items;
-        }
+        this.items = result.data.items;
       });
     },
-    sliceItems: function(items, n) {
+
+    // 提交新资源
+    addItem() {
+      axios({
+        method: "POST",
+        url: "/bookmark/",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        transformRequest: [(data) => {
+          data = JSON.stringify(data);
+          return data;
+        }],
+        withCredentials: true,
+        data: this.itemEditDialog.formModel
+      }).then((result) => {
+        this.updateItems();
+        return result;
+      });
+    },
+
+    // 修改一个资源
+    modifyItem() {
+      axios({
+        method: "UPDATE", 
+        url: "/bookmark/"
+      });
+    },
+
+    // 重组资源顺序，用于界面显示排列
+    sliceItems(items, n) {
       let row_number = Math.ceil(items.length / n);
       let new_items = [];
       for (let i = 0; i < row_number; ++i) {
@@ -86,22 +124,26 @@ export default {
 
       return new_items;
     }, 
-    onAddItemFormSubmit: function() {
-      axios({
-        method: "PUT",
-        url: "/api/bookmark/add",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        transformRequest: [function(data) {
-          data = JSON.stringify(data);
-          return data;
-        }],
-        withCredentials: true,
-        data: this.itemFormModel
-      }).then((result) => {
-        this.onUpdateItems();
-      });
+
+    // 以下为按钮事件
+    onAdd: function() {
+      itemEditDialog.edit = false;
+      itemEditDialog.visible = true;
+    },
+    onEdit: function() {
+      itemEditDialog.edit = true;
+      itemEditDialog.visible = true;
+    },
+    onSubmit: function() {
+      itemEditDialog.visible = false;
+      if (itemEditDialog.edit) {
+        modifyItem();
+      } else {
+        addItem();
+      }
+    },
+    onCancel: function() {
+      itemEditDialog.visible = false;
     }
   }
 }
