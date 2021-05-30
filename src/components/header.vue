@@ -1,7 +1,7 @@
 <template>
   <el-header>
     <el-menu mode="horizontal" :default-active="activeIndex" router>
-      <el-menu-item index="bookmark" :route="{name: 'bookmark'}">Bookmark</el-menu-item>
+      <el-menu-item index="index" :route="{name: 'index'}">Index</el-menu-item>
       <el-menu-item index="workflow" :route="{name: 'workflow'}">Workflow</el-menu-item>
       <el-menu-item index="about" :route="{name: 'about'}">About</el-menu-item>
     </el-menu>
@@ -16,7 +16,7 @@
     }, 
     data() {
       return {
-        activeIndex: 'about'
+        activeIndex: 'index'
       };
     }
   }

@@ -1,4 +1,4 @@
-# sinan
+# Sinan web static
 
 ## Project setup
 ```
