@@ -8,7 +8,7 @@ import MainHeader from './components/header';
 import MainFooter from './components/footer';
 import MainAside from './components/aside';
 import Workflow from './components/workflow';
-import Bookmark from './components/bookmark';
+import Index from './components/index';
 import About from './components/about';
 
 import 'element-ui/lib/theme-chalk/base.css';
@@ -41,9 +41,9 @@ var router = new VueRouter({
   mode: 'hash', 
   routes: [
     {
-      path: '/bookmark', 
-      name: Bookmark.name,
-      component: Bookmark
+      path: '/index', 
+      name: Index.name,
+      component: Index
     }, 
     {
       path: '/about',
@@ -54,6 +54,10 @@ var router = new VueRouter({
       path: '/workflow',
       name: Workflow.name, 
       component: Workflow
+    },
+    {
+      path: '/',    // 默认跳转项
+      redirect: '/index'
     }
   ]
 });

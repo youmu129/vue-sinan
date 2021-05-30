@@ -1,6 +1,6 @@
 <template>
-  <div id="bookmark">
-    <h2>Bookmark</h2>
+  <div id="index">
+    <h2>Index</h2>
     <div id="website">
       <el-row>
         <el-col :span="4">
@@ -14,30 +14,30 @@
         </el-col>
       </el-row>
       <el-divider></el-divider>
-      <el-row class="items-row" v-for="row_items in sliceItems(items, 4)" 
+      <el-row class="items-row" v-for="row_items in sliceItems(index, 4)" 
         :key="row_items.row" :gutter="12">
         <el-col v-for="item in row_items" :key="item.id" :span="6">
           <el-card shadow="hover">
             <el-image class="item-logo" :src="item.logo_url" fit="contain"></el-image>
-            <span>{{ item.name }}</span>
+            <span>{{ item.title }}</span>
             <div class="item-desc">{{ item.url }}</div>
             <div class="item-desc">{{ item.description }}</div>
           </el-card>
         </el-col>
       </el-row>
-      <el-dialog title="Add" :visible.sync="itemEditDialogVisible">
+      <el-dialog title="Add" :visible.sync="itemModel.visible">
         <el-form :model="itemModel">
-          <el-form-item label="Name">
-            <el-input v-model="itemModel.name"></el-input>
+          <el-form-item label="Title">
+            <el-input v-model="itemModel.formModel.title"></el-input>
           </el-form-item>
-          <el-form-item label="Uri">
-            <el-input v-model="itemModel.uri"></el-input>
+          <el-form-item label="Url">
+            <el-input v-model="itemModel.formModel.url"></el-input>
           </el-form-item>
           <el-form-item label="Description">
-            <el-input v-model="itemModel.description"></el-input>
+            <el-input v-model="itemModel.formModel.description"></el-input>
           </el-form-item>
-          <el-form-item label="Icon">
-            <el-input v-model="itemModel.icon"></el-input>
+          <el-form-item label="Logo Url">
+            <el-input v-model="itemModel.formModel.logo_url"></el-input>
           </el-form-item>
         </el-form>
         <div>
@@ -53,19 +53,20 @@
 import axios from 'axios'
 
 export default {
-  name: 'bookmark',
+  name: 'index',
   props: [],
   data() {
     return {
-      items: [], 
+      index: [], 
       itemModel: {
         visible: false, 
         edit: false,
         formModel: {
-          name: '', 
-          uri: '', 
+          id: 0,
+          title: '', 
+          url: '', 
           description: '', 
-          icon: '', 
+          logo_url: '', 
           labels: []
         },
       },
@@ -80,9 +81,11 @@ export default {
     updateItems() {
       axios({
         method: "GET", 
-        url: "/bookmark",
+        url: "/index",
       }).then((result) => {
-        this.items = result.data.items;
+        if (result.data.index != null) {
+          this.index = result.data.index;
+        }
       });
     },
 
@@ -90,7 +93,7 @@ export default {
     addItem() {
       axios({
         method: "POST",
-        url: "/bookmark/",
+        url: "/index",
         headers: {
           "Content-Type": "application/json"
         },
@@ -99,7 +102,9 @@ export default {
           return data;
         }],
         withCredentials: true,
-        data: this.itemEditDialog.formModel
+        data: {
+          index: [ this.itemModel.formModel ]
+        }
       }).then((result) => {
         this.updateItems();
         return result;
@@ -110,7 +115,7 @@ export default {
     modifyItem() {
       axios({
         method: "UPDATE", 
-        url: "/bookmark/"
+        url: "/index"
       });
     },
 
@@ -127,30 +132,30 @@ export default {
 
     // 以下为按钮事件
     onAdd: function() {
-      itemEditDialog.edit = false;
-      itemEditDialog.visible = true;
+      this.itemModel.edit = false;
+      this.itemModel.visible = true;
     },
     onEdit: function() {
-      itemEditDialog.edit = true;
-      itemEditDialog.visible = true;
+      this.itemModel.edit = true;
+      this.itemModel.visible = true;
     },
     onSubmit: function() {
-      itemEditDialog.visible = false;
-      if (itemEditDialog.edit) {
-        modifyItem();
+      this.itemModel.visible = false;
+      if (this.itemModel.edit) {
+        this.modifyItem();
       } else {
-        addItem();
+        this.addItem();
       }
     },
     onCancel: function() {
-      itemEditDialog.visible = false;
+      this.itemModel.visible = false;
     }
   }
 }
 </script>
 
 <style scoped>
-  #bookmark {
+  #index {
     width: 90%;
     margin: 0 auto;
   }
