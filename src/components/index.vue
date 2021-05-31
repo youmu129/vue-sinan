@@ -18,7 +18,7 @@
         :key="row_items.row" :gutter="12">
         <el-col v-for="item in row_items" :key="item.id" :span="6">
           <el-card shadow="hover">
-            <el-image class="item-logo" :src="item.logo_url" fit="contain"></el-image>
+            <i class="el-icon-link"></i>
             <span>{{ item.title }}</span>
             <div class="item-desc">{{ item.url }}</div>
             <div class="item-desc">{{ item.description }}</div>
@@ -36,8 +36,8 @@
           <el-form-item label="Description">
             <el-input v-model="itemModel.formModel.description"></el-input>
           </el-form-item>
-          <el-form-item label="Logo Url">
-            <el-input v-model="itemModel.formModel.logo_url"></el-input>
+          <el-form-item label="Tags">
+            <el-input v-model="itemModel.formModel.tags"></el-input>
           </el-form-item>
         </el-form>
         <div>
@@ -66,7 +66,7 @@ export default {
           title: '', 
           url: '', 
           description: '', 
-          logo_url: '', 
+          tags: '', 
           labels: []
         },
       },
@@ -81,7 +81,7 @@ export default {
     updateItems() {
       axios({
         method: "GET", 
-        url: "/index",
+        url: "/index/test",
       }).then((result) => {
         if (result.data.index != null) {
           this.index = result.data.index;
@@ -93,7 +93,7 @@ export default {
     addItem() {
       axios({
         method: "POST",
-        url: "/index",
+        url: "/index/test",
         headers: {
           "Content-Type": "application/json"
         },
@@ -115,7 +115,7 @@ export default {
     modifyItem() {
       axios({
         method: "UPDATE", 
-        url: "/index"
+        url: "/index/test"
       });
     },
 
